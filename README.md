@@ -1,69 +1,116 @@
-# 💡 Fikir Overlay System v2
+<div align="center">
 
-Multi-platform live stream idea overlay system for **YouTube**, **Twitch**, and **Kick**.
+# 💡 Fikir Overlay System
 
-Viewers can submit ideas in chat using trigger commands in **30+ languages** (`/idea`, `/fikir`, `/idée`, `/идея`, `/アイデア`...) and streamers can manage them through a control panel.
+### Multi-Platform Live Stream Idea Overlay
+
+[![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org)
+[![YouTube](https://img.shields.io/badge/YouTube-Chat-FF0000?style=for-the-badge&logo=youtube&logoColor=white)](#)
+[![Twitch](https://img.shields.io/badge/Twitch-Chat-9146FF?style=for-the-badge&logo=twitch&logoColor=white)](#)
+[![Kick](https://img.shields.io/badge/Kick-Chat-53FC18?style=for-the-badge&logo=kick&logoColor=black)](#)
+[![License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](#)
+
+**Viewers submit ideas in chat → Streamer manages them → Post-it overlay in OBS**
+
+*Supports 30+ languages including `/idea`, `/fikir`, `/idée`, `/идея`, `/アイデア` and more!*
+
+---
+
+</div>
 
 ## ✨ Features
 
-- 🌍 **Multi-Language Triggers** — 30+ languages supported
-- 📺 **Multi-Platform** — YouTube, Twitch, Kick chat support
-- 💾 **SQLite Database** — Persistent storage for all ideas and sessions
-- ⏱️ **Rate Limiting** — Max 3 ideas per user per minute
-- 🚫 **Profanity Filter** — English + Turkish bad word filtering
-- 📋 **Idea Status Tracking** — Pending → Accepted → In Progress → Completed
-- 📊 **Web Dashboard** — Browse past streams, stats, search, and filter
-- 🎨 **OBS Overlay** — Post-it style notes with drag, resize, and animations
+| Feature | Description |
+|---------|-------------|
+| 🌍 **30+ Language Triggers** | `/idea`, `/fikir`, `/idée`, `/идея`, `/アイデア`, `/아이디어`... |
+| 📺 **Multi-Platform** | YouTube, Twitch, and Kick chat support |
+| 💾 **SQLite Database** | Persistent storage for ideas & session history |
+| ⏱️ **Rate Limiting** | Max 3 ideas per user per minute (anti-spam) |
+| 🚫 **Profanity Filter** | English + Turkish bad word filtering |
+| 📋 **Status Tracking** | Pending → Accepted → In Progress → Completed |
+| 📊 **Web Dashboard** | Browse past streams, stats, search & filter |
+| 🎨 **OBS Overlay** | Draggable, resizable post-it notes with animations |
 
 ## 🚀 Getting Started
 
-1. Install **[Node.js](https://nodejs.org)** (v18+)
-2. Double-click **`start.bat`** — it auto-installs and launches!
+> **Prerequisites:** [Node.js](https://nodejs.org) v18 or higher
 
-Dependencies are installed automatically on first run.
+```bash
+git clone https://github.com/EEspinoso/fikir-overlay.git
+cd fikir-overlay
+```
+
+**Windows:** Double-click `start.bat` — it auto-installs and launches!
+
+**Manual:**
+```bash
+npm install
+node server.js
+```
 
 ## 🔗 Pages
 
-| Page | URL |
-|------|-----|
-| **Panel** (manage ideas) | http://localhost:3000/panel.html |
-| **Overlay** (OBS source) | http://localhost:3000/overlay.html |
-| **Dashboard** (history) | http://localhost:3000/dashboard.html |
+| Page | URL | Description |
+|------|-----|-------------|
+| 🎛️ **Panel** | `localhost:3000/panel.html` | Accept/reject ideas, manage status |
+| 🖥️ **Overlay** | `localhost:3000/overlay.html` | Add as OBS Browser Source |
+| 📊 **Dashboard** | `localhost:3000/dashboard.html` | Past streams & statistics |
 
-## 📺 Chat Commands
+## 📺 How It Works
 
-Viewers type in chat:
 ```
-/idea Add a survival mode
-/fikir Yeni bir battle royale modu
-/idée Ajouter un mode survie
-/идея Новый режим выживания
+Viewer types in chat:  /idea Add a battle royale mode
+                           ↓
+     ┌─────────────────────────────────────┐
+     │  Rate Limit ✓  Profanity Filter ✓   │
+     │  Duplicate Check ✓  Save to DB ✓    │
+     └─────────────────────────────────────┘
+                           ↓
+  ┌──────────┐    ┌──────────────┐    ┌─────────────┐
+  │  Panel   │ ←→ │   Server     │ ←→ │  Overlay    │
+  │ Accept ✅│    │  Socket.IO   │    │  Post-it 📌 │
+  │ Reject ❌│    │              │    │             │
+  └──────────┘    └──────────────┘    └─────────────┘
 ```
 
-## 🎯 Keyboard Shortcuts (Panel)
+## ⌨️ Keyboard Shortcuts
 
 | Key | Action |
 |-----|--------|
 | `Enter` | Accept selected idea |
 | `Backspace` | Reject selected idea |
-| `↑ ↓` | Navigate between ideas |
+| `↑` `↓` | Navigate between ideas |
 
 ## 📁 Project Structure
 
 ```
-├── server.js           # Main server
+fikir-overlay/
+├── server.js              # Express + Socket.IO server
 ├── lib/
-│   ├── db.js           # SQLite database
-│   ├── ratelimit.js    # Rate limiter
-│   └── profanity.js    # Profanity filter
+│   ├── db.js              # SQLite database module
+│   ├── ratelimit.js       # Sliding window rate limiter
+│   └── profanity.js       # EN + TR profanity filter
 ├── public/
-│   ├── css/            # Stylesheets
-│   ├── overlay.html    # OBS overlay
-│   ├── panel.html      # Control panel
-│   └── dashboard.html  # History & stats
-└── start.bat           # One-click launcher
+│   ├── css/               # Stylesheets
+│   ├── panel.html         # Streamer control panel
+│   ├── overlay.html       # OBS browser source
+│   └── dashboard.html     # History & statistics
+├── start.bat              # One-click Windows launcher
+└── package.json
 ```
+
+## 🤝 Contributing
+
+Pull requests are welcome! Feel free to open an issue for bugs or feature requests.
 
 ## 📋 License
 
-MIT
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+<div align="center">
+
+**Made with ❤️ for streamers**
+
+</div>
