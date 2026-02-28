@@ -54,3 +54,7 @@
 [17:21:51] [test] @TestUser: Yeni bir battle royale modu
 [17:42:34] [test] @GamerTR: Yeni harita: uzay istasyonu
 [17:42:39] [test] @PixelMaster: Co-op boss fights would be epic!
+[18:53:37] [test] @TestUserGamer123: Let's add a multiplayer racing mode with custom cars!
+[18:53:43] [test] @TestUserGamer123: about a day/night cycle?
+[18:53:41] [test] @TestUserGamer123: ProStreamer
+[18:53:46] [test] @TestUserGamer123: harita: Uzay istasyonu!
