@@ -42,12 +42,6 @@
 </details>
 
 <details>
-<summary><b>🖥️ OBS Overlay</b> — Post-it notes with drag, resize & status badges</summary>
-<br>
-<img src="screenshots/overlay.png" alt="OBS Overlay" width="100%">
-</details>
-
-<details>
 <summary><b>📊 Dashboard</b> — Past streams, statistics & search</summary>
 <br>
 <img src="screenshots/dashboard.png" alt="Dashboard" width="100%">
