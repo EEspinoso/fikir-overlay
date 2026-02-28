@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Fikir Overlay</title>
+    <link rel="stylesheet" href="css/overlay.css">
+</head>
+
+<body>
+    <!-- Incoming idea notification -->
+    <div id="notification-area"></div>
+
+    <!-- Post-it board for accepted ideas -->
+    <div id="postit-board"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        const notificationArea = document.getElementById('notification-area');
+        const postitBoard = document.getElementById('postit-board');
+
+        function randomRotation() {
+            return (Math.random() * 8 - 4).toFixed(1);
+        }
+
+        function randomColor() {
+            const colors = [
+                '#FFE066', '#FF8C94', '#91E6C8', '#87CEEB',
+                '#DDA0DD', '#FFB347', '#98FB98', '#F0E68C',
+            ];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        function platformIcon(platform) {
+            switch (platform) {
+                case 'youtube': return '🟥';
+                case 'twitch': return '🟣';
+                case 'kick': return '🟢';
+                case 'test': return '🧪';
+                default: return '💬';
+            }
+        }
+
+        function statusBadgeHTML(status) {
+            switch (status) {
+                case 'in_progress': return '<div class="postit-status in-progress">🔨 Yapılıyor</div>';
+                case 'completed': return '<div class="postit-status completed">✅ Tamamlandı</div>';
+                default: return '';
+            }
+        }
+
+        // Show incoming idea notification
+        function showNotification(idea) {
+            const notif = document.createElement('div');
+            notif.className = 'notification';
+            notif.id = `notif-${idea.id}`;
+            notif.innerHTML = `
+                <div class="notif-header">
+                    <span class="notif-icon">💡</span>
+                    <span class="notif-label">Yeni Fikir!</span>
+                    <span class="notif-platform">${platformIcon(idea.platform)}</span>
+                </div>
+                <div class="notif-author">@${idea.author}</div>
+                <div class="notif-text">${idea.text}</div>
+                <div class="notif-waiting">Yanıt bekleniyor...</div>
+            `;
+            notificationArea.appendChild(notif);
+            requestAnimationFrame(() => {
+                notif.classList.add('show');
+            });
+        }
+
+        function acceptNotification(idea) {
+            const notif = document.getElementById(`notif-${idea.id}`);
+            if (notif) {
+                notif.classList.add('accepted');
+                setTimeout(() => notif.remove(), 600);
+            }
+            addPostIt(idea);
+        }
+
+        function rejectNotification(idea) {
+            const notif = document.getElementById(`notif-${idea.id}`);
+            if (notif) {
+                notif.classList.add('rejected');
+                setTimeout(() => notif.remove(), 600);
+            }
+        }
+
+        function addPostIt(idea) {
+            const postit = document.createElement('div');
+            postit.className = 'postit';
+            postit.id = `postit-${idea.id}`;
+            postit.style.setProperty('--rotation', `${randomRotation()}deg`);
+            postit.style.setProperty('--color', randomColor());
+            postit.innerHTML = `
+                <div class="postit-delete" onclick="removePostIt(${idea.id}, this.parentElement)">×</div>
+                <div class="postit-pin"></div>
+                <div class="postit-platform">${platformIcon(idea.platform)}</div>
+                <div class="postit-author">@${idea.author}</div>
+                <div class="postit-text">${idea.text}</div>
+                <div class="postit-status-area" id="postit-status-${idea.id}">
+                    ${statusBadgeHTML(idea.status)}
+                </div>
+            `;
+            postitBoard.appendChild(postit);
+            requestAnimationFrame(() => {
+                postit.classList.add('show');
+            });
+            makeInteractive(postit);
+        }
+
+        // Combined drag (left-click) and resize (scroll wheel)
+        function makeInteractive(el) {
+            let isDragging = false;
+            let isResizing = false;
+            let startX, startY, origX, origY, startW;
+
+            el.addEventListener('contextmenu', (e) => e.preventDefault());
+
+            el.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                const currentScale = parseFloat(el.dataset.scale || '1');
+                const delta = e.deltaY > 0 ? -0.1 : 0.1;
+                const newScale = Math.max(0.5, Math.min(3, currentScale + delta));
+                el.dataset.scale = newScale;
+                el.style.transform = `rotate(var(--rotation, 0deg)) scale(${newScale})`;
+                const id = el.id.replace('postit-', '');
+                socket.emit('postit-resize', { id: parseInt(id), scale: newScale.toString() });
+            });
+
+            el.addEventListener('mousedown', (e) => {
+                startX = e.clientX;
+                startY = e.clientY;
+
+                if (e.button === 0) {
+                    isDragging = true;
+                    el.classList.add('dragging');
+                    const rect = el.getBoundingClientRect();
+                    origX = rect.left;
+                    origY = rect.top;
+                    el.style.position = 'fixed';
+                    el.style.left = origX + 'px';
+                    el.style.top = origY + 'px';
+                    el.style.zIndex = '200';
+                    el.style.margin = '0';
+                } else if (e.button === 2) {
+                    isResizing = true;
+                    el.classList.add('resizing');
+                    startW = parseFloat(el.dataset.scale || '1');
+                }
+                e.preventDefault();
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    el.style.left = (origX + e.clientX - startX) + 'px';
+                    el.style.top = (origY + e.clientY - startY) + 'px';
+                } else if (isResizing) {
+                    const delta = (e.clientX - startX) / 200;
+                    const newScale = Math.max(0.5, Math.min(3, startW + delta));
+                    el.dataset.scale = newScale;
+                    el.style.transform = `rotate(var(--rotation, 0deg)) scale(${newScale})`;
+                }
+            });
+
+            document.addEventListener('mouseup', (e) => {
+                if (isDragging) {
+                    isDragging = false;
+                    el.classList.remove('dragging');
+                    el.style.zIndex = '50';
+                    const id = el.id.replace('postit-', '');
+                    socket.emit('postit-move', {
+                        id: parseInt(id),
+                        left: el.style.left,
+                        top: el.style.top
+                    });
+                }
+                if (isResizing) {
+                    isResizing = false;
+                    el.classList.remove('resizing');
+                    const id = el.id.replace('postit-', '');
+                    socket.emit('postit-resize', {
+                        id: parseInt(id),
+                        scale: el.dataset.scale
+                    });
+                }
+            });
+        }
+
+        function removePostIt(id, el) {
+            const currentScale = parseFloat(el.dataset.scale || '1');
+            el.style.setProperty('--current-scale', currentScale);
+            el.classList.add('removing');
+            setTimeout(() => el.remove(), 500);
+            fetch(`/api/remove-postit/${id}`, { method: 'POST' });
+        }
+
+        // Socket events
+        socket.on('new-idea', (idea) => showNotification(idea));
+        socket.on('idea-accepted', (idea) => acceptNotification(idea));
+        socket.on('idea-rejected', (idea) => rejectNotification(idea));
+
+        socket.on('idea-status-changed', (data) => {
+            const statusArea = document.getElementById(`postit-status-${data.id}`);
+            if (statusArea) {
+                statusArea.innerHTML = statusBadgeHTML(data.status);
+            }
+        });
+
+        socket.on('postit-removed', (data) => {
+            const el = document.getElementById(`postit-${data.id}`);
+            if (el) {
+                el.classList.add('removing');
+                setTimeout(() => el.remove(), 500);
+            }
+        });
+
+        socket.on('postit-moved', (data) => {
+            const el = document.getElementById(`postit-${data.id}`);
+            if (el) {
+                el.style.position = 'fixed';
+                el.style.left = data.left;
+                el.style.top = data.top;
+                el.style.margin = '0';
+            }
+        });
+
+        socket.on('postit-resized', (data) => {
+            const el = document.getElementById(`postit-${data.id}`);
+            if (el) {
+                el.dataset.scale = data.scale;
+                el.style.transform = `rotate(var(--rotation, 0deg)) scale(${data.scale})`;
+            }
+        });
+
+        socket.on('sync', (data) => {
+            data.accepted.forEach(idea => {
+                addPostIt(idea);
+                if (data.positions && data.positions[idea.id]) {
+                    const el = document.getElementById(`postit-${idea.id}`);
+                    if (el) {
+                        el.style.position = 'fixed';
+                        el.style.left = data.positions[idea.id].left;
+                        el.style.top = data.positions[idea.id].top;
+                        el.style.margin = '0';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

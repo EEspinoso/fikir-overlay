@@ -1,0 +1,541 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #0a0a14;
+    color: #e0e0e0;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    min-height: 100vh;
+}
+
+.dashboard {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+/* ============================================
+   Top Bar
+   ============================================ */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.topbar-left h1 {
+    font-size: 24px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #a882ff, #58b4ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-back {
+    background: rgba(255, 255, 255, 0.08);
+    color: #aaa;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-back:hover {
+    background: rgba(255, 255, 255, 0.14);
+    color: white;
+}
+
+.btn-close {
+    background: rgba(255, 80, 80, 0.15);
+    color: #f87171;
+    font-size: 18px;
+    padding: 4px 10px;
+    line-height: 1;
+}
+
+.btn-close:hover {
+    background: rgba(255, 80, 80, 0.3);
+}
+
+.search-box input {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    color: white;
+    padding: 10px 16px;
+    font-size: 14px;
+    width: 300px;
+    outline: none;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.search-box input:focus {
+    border-color: #a882ff;
+    box-shadow: 0 0 16px rgba(168, 130, 255, 0.15);
+}
+
+.search-box input::placeholder {
+    color: rgba(255, 255, 255, 0.25);
+}
+
+/* ============================================
+   Stats Cards
+   ============================================ */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: inherit;
+    opacity: 0.12;
+    border-radius: 14px;
+}
+
+.stat-value {
+    font-size: 32px;
+    font-weight: 800;
+    position: relative;
+    z-index: 1;
+}
+
+.stat-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 1;
+}
+
+.gradient-purple {
+    background: linear-gradient(135deg, rgba(168, 130, 255, 0.15), rgba(168, 130, 255, 0.05));
+    border: 1px solid rgba(168, 130, 255, 0.2);
+}
+
+.gradient-purple .stat-value {
+    color: #c4a8ff;
+}
+
+.gradient-green {
+    background: linear-gradient(135deg, rgba(74, 222, 128, 0.15), rgba(74, 222, 128, 0.05));
+    border: 1px solid rgba(74, 222, 128, 0.2);
+}
+
+.gradient-green .stat-value {
+    color: #4ade80;
+}
+
+.gradient-orange {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.15), rgba(251, 191, 36, 0.05));
+    border: 1px solid rgba(251, 191, 36, 0.2);
+}
+
+.gradient-orange .stat-value {
+    color: #fbbf24;
+}
+
+.gradient-blue {
+    background: linear-gradient(135deg, rgba(88, 180, 255, 0.15), rgba(88, 180, 255, 0.05));
+    border: 1px solid rgba(88, 180, 255, 0.2);
+}
+
+.gradient-blue .stat-value {
+    color: #58b4ff;
+}
+
+.gradient-pink {
+    background: linear-gradient(135deg, rgba(255, 107, 157, 0.15), rgba(255, 107, 157, 0.05));
+    border: 1px solid rgba(255, 107, 157, 0.2);
+}
+
+.gradient-pink .stat-value {
+    color: #ff6b9d;
+}
+
+/* ============================================
+   Main Content (sessions + ideas side by side)
+   ============================================ */
+.main-content {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.panel {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 14px;
+    padding: 20px;
+    backdrop-filter: blur(8px);
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.panel-header h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ccc;
+}
+
+/* Filter */
+.filter-row select {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    color: white;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-family: inherit;
+    outline: none;
+    cursor: pointer;
+}
+
+.filter-row select option {
+    background: #1a1a2e;
+    color: white;
+}
+
+/* ============================================
+   Sessions List
+   ============================================ */
+.sessions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.sessions-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.sessions-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+}
+
+.session-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.session-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(168, 130, 255, 0.3);
+}
+
+.session-card.active {
+    border-color: #a882ff;
+    background: rgba(168, 130, 255, 0.08);
+    box-shadow: 0 0 16px rgba(168, 130, 255, 0.1);
+}
+
+.session-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.session-platform {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.session-date {
+    font-size: 11px;
+    color: #666;
+}
+
+.session-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 8px;
+}
+
+.session-stats {
+    display: flex;
+    gap: 12px;
+}
+
+.session-ideas,
+.session-accepted {
+    font-size: 11px;
+    color: #888;
+    font-weight: 500;
+}
+
+.session-accepted {
+    color: #4ade80;
+}
+
+/* ============================================
+   Ideas Detail List
+   ============================================ */
+.ideas-detail-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.ideas-detail-list::-webkit-scrollbar {
+    width: 4px;
+}
+
+.ideas-detail-list::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+}
+
+.idea-detail-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 14px;
+    transition: all 0.2s;
+}
+
+.idea-detail-card:hover {
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.idea-detail-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.idea-detail-author {
+    font-size: 12px;
+    color: #88aaff;
+    font-weight: 600;
+}
+
+.idea-detail-text {
+    font-size: 15px;
+    color: white;
+    line-height: 1.5;
+    margin-bottom: 6px;
+}
+
+.idea-detail-meta {
+    font-size: 11px;
+    color: #555;
+}
+
+/* ============================================
+   Status Badges
+   ============================================ */
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge.pending {
+    background: rgba(255, 255, 255, 0.08);
+    color: #888;
+}
+
+.badge.accepted {
+    background: rgba(74, 222, 128, 0.12);
+    color: #4ade80;
+}
+
+.badge.rejected {
+    background: rgba(248, 113, 113, 0.12);
+    color: #f87171;
+}
+
+.badge.in-progress {
+    background: rgba(251, 191, 36, 0.12);
+    color: #fbbf24;
+}
+
+.badge.completed {
+    background: rgba(88, 180, 255, 0.12);
+    color: #58b4ff;
+}
+
+/* ============================================
+   Authors Panel
+   ============================================ */
+.authors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+}
+
+.author-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    padding: 12px 14px;
+    transition: all 0.2s;
+}
+
+.author-card:hover {
+    background: rgba(255, 255, 255, 0.07);
+}
+
+.author-rank {
+    font-size: 14px;
+    font-weight: 800;
+    color: #fbbf24;
+    min-width: 28px;
+}
+
+.author-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #88aaff;
+    flex: 1;
+}
+
+.author-stats {
+    font-size: 11px;
+    color: #4ade80;
+    font-weight: 500;
+}
+
+/* ============================================
+   Search Panel
+   ============================================ */
+.search-panel {
+    margin-bottom: 24px;
+}
+
+/* ============================================
+   Empty State
+   ============================================ */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #555;
+}
+
+.empty-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+}
+
+.empty-state p {
+    font-size: 14px;
+    font-style: italic;
+}
+
+.empty-small {
+    text-align: center;
+    color: #555;
+    font-size: 13px;
+    font-style: italic;
+    padding: 16px;
+}
+
+.loading {
+    text-align: center;
+    padding: 30px;
+    color: #666;
+    font-style: italic;
+}
+
+/* ============================================
+   Responsive
+   ============================================ */
+@media (max-width: 900px) {
+    .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .dashboard {
+        padding: 12px;
+    }
+
+    .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .search-box input {
+        width: 100%;
+    }
+}

@@ -1,0 +1,54 @@
+[11:05:14] @TestKullanıcı: Boss dusman ekleyelim oyuna!
+[11:12:31] @@CoverYolcusu: Salam sosis
+[11:18:56] @@CoverYolcusu: bikbik
+[11:20:22] @@CoverYolcusu: laklakyap
+[11:22:59] @TestKullanıcı: a
+[11:22:59] @TestKullanıcı: a
+[11:22:59] @TestKullanıcı: a
+[11:23:00] @TestKullanıcı: a
+[11:25:02] @TestKullanıcı: a
+[11:25:29] @TestKullanıcı: asdsad
+[11:29:01] @TestKullanıcı: a
+[11:33:49] @@CoverYolcusu: talalsos
+[11:37:03] @TestKullanıcı: Bu bir test fikridir!
+[11:40:01] @TestKullanıcı: Bu bir test fikridir!
+[11:56:52] @TestKullanıcı: Bu bir test fikridir!
+[11:59:19] @TestKullanıcı: Bu bir test fikridir!
+[11:59:24] @TestKullanıcı: Bu bir test fikridir!
+[11:59:24] @TestKullanıcı: Bu bir test fikridir!
+[20:56:26] @@yapayefsanetv: naber
+[20:56:39] @TestKullanıcı: Bu bir test fikridir!
+[20:58:25] @@yapayefsanetv: naber
+[20:59:40] @@yapayefsanetv: aksda
+[21:01:25] @@yapayefsanetv: (fikriniz) yazarak fikirlerinizi belirtebilirsiniz
+[21:02:18] @@yapayefsanetv: /fikir (fikriniz) yazarak fikirlerinizi belirtebilirsiniz
+[21:11:59] @@yapayefsanetv: /fikir fikirimi belirtiyorum
+[21:12:50] @@UmutBerkeCatalbas: granade eklenebilir
+[21:13:47] @@UmutBerkeCatalbas: Armor + Heal Pot
+[21:17:02] @@Parzivall_24: sersemletme bomamsı gibi bişey eklene bilir
+[21:16:40] @@UmutBerkeCatalbas: silah geliştirme kısmı toplanılacak itemler ile yapılmalı mt2 mantığında garanti upgrade olmamalı
+[21:17:41] @@Parzivall_24: yada cod 2 de ki çanlı maymun vardı zombileri etrafına toplayıp patlıyordu öyle bişey olabilir
+[21:19:21] @@UmutBerkeCatalbas: silah modelleri gerçek silahlar ile benzetilebilir seviye atladıkça silah modelleri fütürist şekilde değişebilir AK46-M16-SCAR
+[21:21:10] @@UmutBerkeCatalbas: bence G ile ele alınsın sol mouse tick ile atılsın
+[21:26:18] @@Parzivall_24: silah sesleri eklene bilir
+[21:27:29] @@UmutBerkeCatalbas: 3.Şahıs kamerası eklenip ana karakter modellenebilir.
+[21:31:48] @@UmutBerkeCatalbas: bomba ele alınıp sol tık basıldıktan itibaren elde kalırsa 5sn de patlayıp ana karaktere zarar versin elden çıkınca 3sn veya 4sn içinde patlasın
+[21:33:35] @@UmutBerkeCatalbas: bomba envantere default gelmesin belirli karakterler belirli sayılarda öldürüldükçe drop olarak düşsün sınırlı sayıda kullanım olsun
+[21:37:01] @@UmutBerkeCatalbas: karakterlerden biri l4d2 de zehirli kusmuk atan zombi gibi uzaktan atış yapsın ana karaltere değerse 3-5 sn -Can yesin
+[21:39:59] @@UmutBerkeCatalbas: ormanlık bir alanda geçecekse eğer oyun belirli bir seviyeye gelindiğinde Night Vision N harfine basıldığında açılabilir pilli olsun drop ile pil düşürüp kullanılabilir
+[21:48:24] @@UmutBerkeCatalbas: kuzenim kolay gelsin sana gece mesaim var :) yatışa geçiyorum ben
+[21:50:49] @@yapayefsanetv: cross ekle
+[22:04:01] @@yapayefsanetv: asjkdnakjsd
+[21:16:53] @TestKullanıcı: Bu bir test fikridir!
+[21:17:51] @TestKullanıcı: /fikir yazıp fikrinizi yazarsanız ekranda gözükecektir :D
+[21:27:40] @@BahaAkbaş-c9b: oyun ne ile alakalı
+[21:29:04] @@BahaAkbaş-c9b: oyuna araba ekle bence korumalı araba olsun
+[21:33:10] @@BahaAkbaş-c9b: oyuna zorluk modu ekle kolay arena zor arena vb.
+[21:47:37] @@BahaAkbaş-c9b: envanter ve can barı olsun can toplayalım
+[21:52:40] @ @BahaAkbaş-c9b: bence tuşa basılı tuttuğumuzda bir bar dolsun yükseklik öyle ayarlansın
+[19:37:33] @TestKullanıcı: /fikir yazarak fikirlerini ekrana gönderebilirsiniz
+[19:41:24] @TestKullanıcı: /fikir yazarak fikirlerini ekrana gönderebilirsiniz
+[20:31:50] @@lobo_s03: ne ediyon baboş
+[20:31:50] @@lobo_s03: alüüüüü
+[20:32:09] @@lobo_s03: nedion
+[17:21:51] [test] @TestUser: Yeni bir battle royale modu

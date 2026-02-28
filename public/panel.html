@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Fikir Kontrol Paneli v2</title>
+    <link rel="stylesheet" href="css/panel.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>💡 Fikir Kontrol Paneli</h1>
+            <div class="header-right">
+                <a href="/dashboard.html" class="btn btn-dashboard">📊 Dashboard</a>
+                <div class="status" id="status">
+                    <span class="status-dot offline"></span>
+                    <span id="status-text">Bağlı değil</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Platform Connection Tabs -->
+        <section class="connect-section">
+            <div class="platform-tabs">
+                <button class="tab active" data-tab="youtube" onclick="switchTab('youtube')">🟥 YouTube</button>
+                <button class="tab" data-tab="twitch" onclick="switchTab('twitch')">🟣 Twitch</button>
+                <button class="tab" data-tab="kick" onclick="switchTab('kick')">🟢 Kick</button>
+            </div>
+
+            <!-- YouTube -->
+            <div class="tab-content active" id="tab-youtube">
+                <div class="connect-form">
+                    <input type="text" id="youtubeInput" placeholder="YouTube Live ID veya Channel ID">
+                    <button onclick="connectYouTube()" class="btn btn-connect">Bağlan</button>
+                </div>
+                <p class="help-text">Live ID: YouTube yayın URL'sindeki ?v= sonrası kod</p>
+                <div id="yt-history-section" style="margin-top: 10px; display: none;">
+                    <p class="help-text" style="margin-bottom: 6px;">Son bağlantılar:</p>
+                    <div id="yt-history-list" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
+                </div>
+            </div>
+
+            <!-- Twitch -->
+            <div class="tab-content" id="tab-twitch">
+                <div class="connect-form">
+                    <input type="text" id="twitchInput" placeholder="Twitch kanal adı (örn: xQc)">
+                    <button onclick="connectTwitch()" class="btn btn-connect btn-twitch">Bağlan</button>
+                </div>
+                <p class="help-text">Kanal adını yazmanız yeterli, # işareti gerekmez</p>
+            </div>
+
+            <!-- Kick -->
+            <div class="tab-content" id="tab-kick">
+                <div class="connect-form">
+                    <input type="text" id="kickInput" placeholder="Kick kanal slug (örn: xqc)">
+                    <button onclick="connectKick()" class="btn btn-connect btn-kick">Bağlan</button>
+                </div>
+                <p class="help-text">kick.com/kanal-adi URL'sindeki kanal adını yazın</p>
+            </div>
+        </section>
+
+        <!-- Test Section -->
+        <section class="test-section">
+            <h2>Test Modu</h2>
+            <div class="test-form">
+                <input type="text" id="testAuthor" placeholder="Kullanıcı adı" value="TestKullanıcı">
+                <input type="text" id="testIdea" placeholder="Fikir yaz...">
+                <button onclick="sendTestIdea()" class="btn btn-test">Test Fikir Gönder</button>
+            </div>
+        </section>
+
+        <!-- Pending Ideas -->
+        <section class="ideas-section">
+            <h2>Bekleyen Fikirler <span class="count" id="pending-count">0</span></h2>
+            <div id="pending-ideas" class="ideas-list"></div>
+            <p class="empty-text" id="no-pending">Henüz fikir yok — izleyiciler /fikir, /idea, /idée, /идея vb. yazınca
+                burada görünecek (30+ dil)</p>
+        </section>
+
+        <!-- Accepted Ideas -->
+        <section class="ideas-section accepted-section">
+            <h2>✅ Kabul Edilen Fikirler <span class="count accepted-count" id="accepted-count">0</span></h2>
+            <div id="accepted-ideas" class="ideas-list"></div>
+        </section>
+
+        <footer>
+            <p>⌨️ Kısayollar: <kbd>Enter</kbd> Kabul · <kbd>Backspace</kbd> Red · <kbd>↑↓</kbd> Seçim</p>
+        </footer>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let pendingIdeas = [];
+        let selectedIndex = 0;
+
+        const pendingContainer = document.getElementById('pending-ideas');
+        const acceptedContainer = document.getElementById('accepted-ideas');
+        const pendingCount = document.getElementById('pending-count');
+        const acceptedCount = document.getElementById('accepted-count');
+        const noPending = document.getElementById('no-pending');
+        const statusDot = document.querySelector('.status-dot');
+        const statusText = document.getElementById('status-text');
+
+        // ============================================
+        // Platform Tabs
+        // ============================================
+        function switchTab(platform) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.tab[data-tab="${platform}"]`).classList.add('active');
+            document.getElementById(`tab-${platform}`).classList.add('active');
+        }
+
+        // ============================================
+        // Platform Icons
+        // ============================================
+        function platformIcon(platform) {
+            switch (platform) {
+                case 'youtube': return '🟥';
+                case 'twitch': return '🟣';
+                case 'kick': return '🟢';
+                case 'test': return '🧪';
+                default: return '💬';
+            }
+        }
+
+        function statusBadge(status) {
+            switch (status) {
+                case 'in_progress': return '<span class="status-badge in-progress">🔨 Yapılıyor</span>';
+                case 'completed': return '<span class="status-badge completed">✅ Tamamlandı</span>';
+                default: return '';
+            }
+        }
+
+        // ============================================
+        // Connection History
+        // ============================================
+        function loadHistory() {
+            try {
+                return JSON.parse(localStorage.getItem('fikir-history') || '[]');
+            } catch { return []; }
+        }
+
+        function saveToHistory(id, label) {
+            const history = loadHistory();
+            const filtered = history.filter(h => h.id !== id);
+            filtered.unshift({ id, label: label || id, date: new Date().toLocaleDateString('tr-TR') });
+            localStorage.setItem('fikir-history', JSON.stringify(filtered.slice(0, 10)));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const history = loadHistory();
+            const section = document.getElementById('yt-history-section');
+            const list = document.getElementById('yt-history-list');
+            if (history.length === 0) { section.style.display = 'none'; return; }
+            section.style.display = 'block';
+            list.innerHTML = history.map(h =>
+                `<button class="btn btn-history" onclick="quickConnect('${h.id}')" title="${h.date}">${h.label}</button>`
+            ).join('');
+        }
+
+        function quickConnect(id) {
+            document.getElementById('youtubeInput').value = id;
+            connectYouTube();
+        }
+
+        renderHistory();
+
+        // ============================================
+        // Connection Functions
+        // ============================================
+        function extractVideoId(input) {
+            let match = input.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+            if (match) return match[1];
+            match = input.match(/youtube\.com\/live\/([a-zA-Z0-9_-]{11})/);
+            if (match) return match[1];
+            match = input.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+            if (match) return match[1];
+            if (/^[a-zA-Z0-9_-]{11}$/.test(input)) return input;
+            return null;
+        }
+
+        function connectYouTube() {
+            const input = document.getElementById('youtubeInput').value.trim();
+            if (!input) return;
+            const videoId = extractVideoId(input);
+            if (videoId) {
+                saveToHistory(videoId, videoId);
+                fetch('/api/connect', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ liveId: videoId })
+                });
+            } else {
+                saveToHistory(input, input);
+                fetch('/api/connect', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ channelId: input })
+                });
+            }
+        }
+
+        function connectTwitch() {
+            const channel = document.getElementById('twitchInput').value.trim();
+            if (!channel) return;
+            fetch('/api/connect-twitch', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ channel })
+            });
+        }
+
+        function connectKick() {
+            const channel = document.getElementById('kickInput').value.trim();
+            if (!channel) return;
+            fetch('/api/connect-kick', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ channel })
+            });
+        }
+
+        // ============================================
+        // Test Ideas
+        // ============================================
+        function sendTestIdea() {
+            const author = document.getElementById('testAuthor').value || 'TestKullanıcı';
+            const text = document.getElementById('testIdea').value || 'Bu bir test fikridir!';
+            fetch('/api/test-idea', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ author, text })
+            });
+            document.getElementById('testIdea').value = '';
+            document.getElementById('testIdea').focus();
+        }
+
+        // ============================================
+        // Idea Management
+        // ============================================
+        function renderPending() {
+            pendingContainer.innerHTML = '';
+            pendingIdeas.forEach((idea, idx) => {
+                const card = document.createElement('div');
+                card.className = `idea-card ${idx === selectedIndex ? 'selected' : ''}`;
+                card.innerHTML = `
+                    <div class="idea-info">
+                        <span class="idea-author">${platformIcon(idea.platform)} @${idea.author}</span>
+                        <span class="idea-time">${idea.time}</span>
+                    </div>
+                    <div class="idea-text">${idea.text}</div>
+                    <div class="idea-actions">
+                        <button onclick="acceptIdea(${idea.id})" class="btn btn-accept">✅ Kabul</button>
+                        <button onclick="rejectIdea(${idea.id})" class="btn btn-reject">❌ Red</button>
+                    </div>
+                `;
+                card.onclick = () => { selectedIndex = idx; renderPending(); };
+                pendingContainer.appendChild(card);
+            });
+
+            pendingCount.textContent = pendingIdeas.length;
+            noPending.style.display = pendingIdeas.length ? 'none' : 'block';
+        }
+
+        function addAcceptedCard(idea) {
+            const card = document.createElement('div');
+            card.className = 'idea-card accepted-card';
+            card.id = `accepted-${idea.id}`;
+            card.innerHTML = `
+                <div class="idea-info">
+                    <span class="idea-author">${platformIcon(idea.platform)} @${idea.author}</span>
+                    <span class="idea-time">${idea.time}</span>
+                </div>
+                <div class="idea-text">${idea.text}</div>
+                <div class="idea-status-row" id="status-row-${idea.id}">
+                    ${statusBadge(idea.status)}
+                </div>
+                <div class="idea-actions status-actions">
+                    <button onclick="changeStatus(${idea.id}, 'in_progress')" class="btn btn-in-progress"
+                        ${idea.status === 'in_progress' ? 'disabled' : ''}>🔨 Yapılıyor</button>
+                    <button onclick="changeStatus(${idea.id}, 'completed')" class="btn btn-completed"
+                        ${idea.status === 'completed' ? 'disabled' : ''}>✅ Tamamlandı</button>
+                </div>
+            `;
+            acceptedContainer.prepend(card);
+            acceptedCount.textContent = acceptedContainer.children.length;
+        }
+
+        function acceptIdea(id) {
+            fetch(`/api/accept/${id}`, { method: 'POST' });
+        }
+
+        function rejectIdea(id) {
+            fetch(`/api/reject/${id}`, { method: 'POST' });
+        }
+
+        function changeStatus(id, status) {
+            fetch(`/api/idea/${id}/status`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status })
+            });
+        }
+
+        // ============================================
+        // Keyboard Shortcuts
+        // ============================================
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') {
+                if (e.key === 'Enter' && e.target.id === 'testIdea') {
+                    sendTestIdea();
+                }
+                return;
+            }
+
+            if (e.key === 'Enter' && pendingIdeas.length > 0) {
+                acceptIdea(pendingIdeas[selectedIndex]?.id);
+            } else if (e.key === 'Backspace' && pendingIdeas.length > 0) {
+                e.preventDefault();
+                rejectIdea(pendingIdeas[selectedIndex]?.id);
+            } else if (e.key === 'ArrowUp') {
+                selectedIndex = Math.max(0, selectedIndex - 1);
+                renderPending();
+            } else if (e.key === 'ArrowDown') {
+                selectedIndex = Math.min(pendingIdeas.length - 1, selectedIndex + 1);
+                renderPending();
+            }
+        });
+
+        // ============================================
+        // Socket Events
+        // ============================================
+        socket.on('status', (data) => {
+            if (data.connected) {
+                statusDot.className = 'status-dot online';
+                const pIcon = platformIcon(data.platform);
+                const label = data.liveId || data.channel || '';
+                statusText.textContent = `${pIcon} ${data.platform} bağlı (${label})`;
+            } else {
+                statusDot.className = 'status-dot offline';
+                statusText.textContent = data.error || 'Bağlı değil';
+            }
+        });
+
+        socket.on('new-idea', (idea) => {
+            pendingIdeas.push(idea);
+            renderPending();
+            try { new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1sb2B0eYmRk5GKgHhxcXV9hoyRkpCLhH56eX2ChoqNjo2Kg4B+fX+ChouNjo6Mh4N/').play(); } catch (e) { }
+        });
+
+        socket.on('idea-accepted', (idea) => {
+            pendingIdeas = pendingIdeas.filter(i => i.id !== idea.id);
+            selectedIndex = Math.min(selectedIndex, Math.max(0, pendingIdeas.length - 1));
+            renderPending();
+            addAcceptedCard(idea);
+        });
+
+        socket.on('idea-rejected', (idea) => {
+            pendingIdeas = pendingIdeas.filter(i => i.id !== idea.id);
+            selectedIndex = Math.min(selectedIndex, Math.max(0, pendingIdeas.length - 1));
+            renderPending();
+        });
+
+        socket.on('idea-status-changed', (data) => {
+            const statusRow = document.getElementById(`status-row-${data.id}`);
+            if (statusRow) {
+                statusRow.innerHTML = statusBadge(data.status);
+            }
+            // Update buttons
+            const card = document.getElementById(`accepted-${data.id}`);
+            if (card) {
+                const ipBtn = card.querySelector('.btn-in-progress');
+                const compBtn = card.querySelector('.btn-completed');
+                if (ipBtn) ipBtn.disabled = data.status === 'in_progress';
+                if (compBtn) compBtn.disabled = data.status === 'completed';
+            }
+        });
+
+        socket.on('sync', (data) => {
+            pendingIdeas = data.pending;
+            renderPending();
+            data.accepted.forEach(idea => {
+                addAcceptedCard(idea);
+            });
+        });
+    </script>
+</body>
+
+</html>
