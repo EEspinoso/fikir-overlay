@@ -31,6 +31,26 @@
 | 📊 **Web Dashboard** | Browse past streams, stats, search & filter |
 | 🎨 **OBS Overlay** | Draggable, resizable post-it notes with animations |
 
+## 📸 Screenshots
+
+<details>
+<summary><b>🎛️ Control Panel</b> — Manage ideas with platform tabs & status controls</summary>
+<br>
+<img src="screenshots/panel.png" alt="Control Panel" width="100%">
+</details>
+
+<details>
+<summary><b>🖥️ OBS Overlay</b> — Post-it notes with drag, resize & status badges</summary>
+<br>
+<img src="screenshots/overlay.png" alt="OBS Overlay" width="100%">
+</details>
+
+<details>
+<summary><b>📊 Dashboard</b> — Past streams, statistics & search</summary>
+<br>
+<img src="screenshots/dashboard.png" alt="Dashboard" width="100%">
+</details>
+
 ## 🚀 Getting Started
 
 > **Prerequisites:** [Node.js](https://nodejs.org) v18 or higher
