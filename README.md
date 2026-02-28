@@ -34,6 +34,20 @@ Viewers submit ideas in chat → you manage them from a control panel → accept
 
 </td>
 </tr>
+<tr>
+<td width="50%">
+
+**🔔 OBS Notifications**
+<img src="screenshots/overlay-notifications.png" alt="Overlay Notifications">
+
+</td>
+<td width="50%">
+
+**📌 OBS Post-it Notes**
+<img src="screenshots/overlay-postits.png" alt="Overlay Post-its">
+
+</td>
+</tr>
 </table>
 
 ---
