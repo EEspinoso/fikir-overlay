@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fikir Dashboard — Geçmiş & İstatistikler</title>
+    <title>Idea Dashboard</title>
     <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/lang.css">
+    <span data-i18n-title="dashTitle" style="display:none"></span>
 </head>
 
 <body>
@@ -13,13 +15,13 @@
         <!-- Top Bar -->
         <header class="topbar">
             <div class="topbar-left">
-                <h1>💡 Fikir Dashboard</h1>
-                <a href="/panel.html" class="btn btn-back">← Panele Dön</a>
+                <h1 data-i18n="dashTitle">💡 Idea Dashboard</h1>
+                <a href="/panel.html" class="btn btn-back" data-i18n="backToPanel">← Back to Panel</a>
             </div>
             <div class="topbar-right">
+                <div id="lang-container"></div>
                 <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="Fikir veya yazar ara..."
-                        oninput="debounceSearch()">
+                    <input type="text" id="searchInput" data-i18n="searchPlaceholder" oninput="debounceSearch()">
                 </div>
             </div>
         </header>
@@ -28,57 +30,55 @@
         <section class="stats-grid" id="stats-grid">
             <div class="stat-card gradient-purple">
                 <div class="stat-value" id="stat-total">-</div>
-                <div class="stat-label">Toplam Fikir</div>
+                <div class="stat-label" data-i18n="totalIdeas">Total Ideas</div>
             </div>
             <div class="stat-card gradient-green">
                 <div class="stat-value" id="stat-accepted">-</div>
-                <div class="stat-label">Kabul Edilen</div>
+                <div class="stat-label" data-i18n="accepted">Accepted</div>
             </div>
             <div class="stat-card gradient-orange">
                 <div class="stat-value" id="stat-progress">-</div>
-                <div class="stat-label">Yapılıyor</div>
+                <div class="stat-label" data-i18n="inProgressLabel">In Progress</div>
             </div>
             <div class="stat-card gradient-blue">
                 <div class="stat-value" id="stat-completed">-</div>
-                <div class="stat-label">Tamamlanan</div>
+                <div class="stat-label" data-i18n="completedLabel">Completed</div>
             </div>
             <div class="stat-card gradient-pink">
                 <div class="stat-value" id="stat-sessions">-</div>
-                <div class="stat-label">Toplam Yayın</div>
+                <div class="stat-label" data-i18n="totalStreams">Total Streams</div>
             </div>
         </section>
 
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Sessions List -->
             <section class="panel sessions-panel">
                 <div class="panel-header">
-                    <h2>📺 Yayın Geçmişi</h2>
+                    <h2 data-i18n="streamHistory">📺 Stream History</h2>
                 </div>
                 <div class="sessions-list" id="sessions-list">
-                    <div class="loading">Yükleniyor...</div>
+                    <div class="loading" data-i18n="loading">Loading...</div>
                 </div>
             </section>
 
-            <!-- Ideas Detail -->
             <section class="panel ideas-panel">
                 <div class="panel-header">
-                    <h2 id="ideas-title">Fikirler</h2>
+                    <h2 id="ideas-title" data-i18n="ideasTitle">Ideas</h2>
                     <div class="filter-row">
                         <select id="statusFilter" onchange="loadSessionIdeas()">
-                            <option value="">Tüm Durumlar</option>
-                            <option value="accepted">Kabul Edilen</option>
-                            <option value="in_progress">Yapılıyor</option>
-                            <option value="completed">Tamamlanan</option>
-                            <option value="rejected">Reddedilen</option>
-                            <option value="pending">Bekleyen</option>
+                            <option value="" data-i18n="allStatuses">All Statuses</option>
+                            <option value="accepted" data-i18n="statusAccepted">Accepted</option>
+                            <option value="in_progress" data-i18n="statusInProgress">In Progress</option>
+                            <option value="completed" data-i18n="statusCompleted">Completed</option>
+                            <option value="rejected" data-i18n="statusRejected">Rejected</option>
+                            <option value="pending" data-i18n="statusPending">Pending</option>
                         </select>
                     </div>
                 </div>
                 <div class="ideas-detail-list" id="ideas-detail-list">
                     <div class="empty-state">
                         <div class="empty-icon">📋</div>
-                        <p>Bir yayın seçerek fikirlerini görüntüle</p>
+                        <p data-i18n="selectStream">Select a stream to view its ideas</p>
                     </div>
                 </div>
             </section>
@@ -87,61 +87,53 @@
         <!-- Top Authors -->
         <section class="panel authors-panel">
             <div class="panel-header">
-                <h2>🏆 En Aktif Yazarlar</h2>
+                <h2 data-i18n="topAuthors">🏆 Top Authors</h2>
             </div>
             <div class="authors-grid" id="authors-grid"></div>
         </section>
 
-        <!-- Search Results (hidden by default) -->
+        <!-- Search Results -->
         <section class="panel search-panel" id="search-panel" style="display:none;">
             <div class="panel-header">
-                <h2>🔍 Arama Sonuçları</h2>
+                <h2 data-i18n="searchResults">🔍 Search Results</h2>
                 <button class="btn btn-close" onclick="closeSearch()">×</button>
             </div>
             <div class="ideas-detail-list" id="search-results"></div>
         </section>
     </div>
 
+    <script src="js/i18n.js"></script>
     <script>
         let currentSessionId = null;
         let searchTimeout = null;
 
-        // ============================================
-        // Platform helpers
-        // ============================================
-        function platformIcon(platform) {
-            switch (platform) {
-                case 'youtube': return '🟥';
-                case 'twitch': return '🟣';
-                case 'kick': return '🟢';
-                case 'test': return '🧪';
-                default: return '💬';
-            }
+        // Init language
+        createLangSelector('lang-container');
+        applyTranslations();
+
+        function onLanguageChange() {
+            applyTranslations();
+            loadStats();
+            loadSessions();
+            if (currentSessionId) loadSessionIdeas();
+        }
+
+        function platformIcon(p) {
+            switch (p) { case 'youtube': return '🟥'; case 'twitch': return '🟣'; case 'kick': return '🟢'; case 'test': return '🧪'; default: return '💬'; }
         }
 
         function statusBadge(status) {
-            switch (status) {
-                case 'pending': return '<span class="badge pending">⏳ Bekliyor</span>';
-                case 'accepted': return '<span class="badge accepted">✅ Kabul</span>';
-                case 'rejected': return '<span class="badge rejected">❌ Red</span>';
-                case 'in_progress': return '<span class="badge in-progress">🔨 Yapılıyor</span>';
-                case 'completed': return '<span class="badge completed">🎉 Tamamlandı</span>';
-                default: return '';
-            }
+            const key = 'badge' + status.charAt(0).toUpperCase() + status.slice(1).replace(/_(\w)/g, (m, c) => c.toUpperCase());
+            const text = t(key) || status;
+            return `<span class="badge ${status.replace('_', '-')}">${text}</span>`;
         }
 
         function formatDate(dateStr) {
             if (!dateStr) return '-';
             const d = new Date(dateStr + 'Z');
-            return d.toLocaleDateString('tr-TR', {
-                day: '2-digit', month: '2-digit', year: 'numeric',
-                hour: '2-digit', minute: '2-digit'
-            });
+            return d.toLocaleDateString(undefined, { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
         }
 
-        // ============================================
-        // Load Stats
-        // ============================================
         async function loadStats() {
             try {
                 const res = await fetch('/api/stats');
@@ -152,84 +144,64 @@
                     document.getElementById('stat-progress').textContent = data.stats.in_progress || 0;
                     document.getElementById('stat-completed').textContent = data.stats.completed || 0;
                     document.getElementById('stat-sessions').textContent = data.stats.total_sessions || 0;
-
-                    // Top authors
-                    const authorsGrid = document.getElementById('authors-grid');
+                    const ag = document.getElementById('authors-grid');
                     if (data.topAuthors && data.topAuthors.length > 0) {
-                        authorsGrid.innerHTML = data.topAuthors.map((a, i) => `
+                        ag.innerHTML = data.topAuthors.map((a, i) => `
                             <div class="author-card">
                                 <span class="author-rank">#${i + 1}</span>
                                 <span class="author-name">@${a.author}</span>
-                                <span class="author-stats">${a.accepted_count}/${a.idea_count} kabul</span>
+                                <span class="author-stats">${a.accepted_count}/${a.idea_count} ${t('accepted_count')}</span>
                             </div>
                         `).join('');
                     } else {
-                        authorsGrid.innerHTML = '<p class="empty-small">Henüz yazar yok</p>';
+                        ag.innerHTML = `<p class="empty-small">${t('noAuthors')}</p>`;
                     }
                 }
-            } catch (e) {
-                console.error('Stats yüklenemedi:', e);
-            }
+            } catch (e) { console.error('Stats error:', e); }
         }
 
-        // ============================================
-        // Load Sessions
-        // ============================================
         async function loadSessions() {
             try {
                 const res = await fetch('/api/sessions?limit=50');
                 const data = await res.json();
                 const list = document.getElementById('sessions-list');
-
                 if (data.ok && data.sessions.length > 0) {
                     list.innerHTML = data.sessions.map(s => `
-                        <div class="session-card ${currentSessionId === s.id ? 'active' : ''}"
-                             onclick="selectSession(${s.id}, '${s.title || 'Yayın'}')">
+                        <div class="session-card ${currentSessionId === s.id ? 'active' : ''}" onclick="selectSession(${s.id}, '${(s.title || t('stream')).replace(/'/g, "\\'")}')">
                             <div class="session-top">
                                 <span class="session-platform">${platformIcon(s.platform)} ${s.platform}</span>
                                 <span class="session-date">${formatDate(s.started_at)}</span>
                             </div>
-                            <div class="session-title">${s.title || `${s.platform} Stream`}</div>
+                            <div class="session-title">${s.title || `${s.platform} ${t('stream')}`}</div>
                             <div class="session-stats">
-                                <span class="session-ideas">${s.total_ideas || 0} fikir</span>
-                                <span class="session-accepted">${s.accepted_ideas || 0} kabul</span>
+                                <span class="session-ideas">${s.total_ideas || 0} ${t('ideas')}</span>
+                                <span class="session-accepted">${s.accepted_ideas || 0} ${t('accepted_count')}</span>
                             </div>
                         </div>
                     `).join('');
                 } else {
-                    list.innerHTML = '<div class="empty-state"><div class="empty-icon">📺</div><p>Henüz yayın kaydı yok</p></div>';
+                    list.innerHTML = `<div class="empty-state"><div class="empty-icon">📺</div><p>${t('noStreams')}</p></div>`;
                 }
-            } catch (e) {
-                console.error('Sessions yüklenemedi:', e);
-            }
+            } catch (e) { console.error('Sessions error:', e); }
         }
 
-        // ============================================
-        // Select Session & Load Ideas
-        // ============================================
         async function selectSession(sessionId, title) {
             currentSessionId = sessionId;
             document.getElementById('ideas-title').textContent = `💬 ${title}`;
             document.getElementById('search-panel').style.display = 'none';
-
-            // Highlight active session
             document.querySelectorAll('.session-card').forEach(c => c.classList.remove('active'));
             event.currentTarget.classList.add('active');
-
             await loadSessionIdeas();
         }
 
         async function loadSessionIdeas() {
             if (!currentSessionId) return;
-
             const status = document.getElementById('statusFilter').value;
             const url = `/api/sessions/${currentSessionId}/ideas${status ? `?status=${status}` : ''}`;
-
             try {
                 const res = await fetch(url);
                 const data = await res.json();
                 const list = document.getElementById('ideas-detail-list');
-
                 if (data.ok && data.ideas.length > 0) {
                     list.innerHTML = data.ideas.map(idea => `
                         <div class="idea-detail-card">
@@ -242,36 +214,22 @@
                         </div>
                     `).join('');
                 } else {
-                    list.innerHTML = '<div class="empty-state"><div class="empty-icon">💤</div><p>Bu filtreleye uygun fikir yok</p></div>';
+                    list.innerHTML = `<div class="empty-state"><div class="empty-icon">💤</div><p>${t('noIdeasFilter')}</p></div>`;
                 }
-            } catch (e) {
-                console.error('İdeas yüklenemedi:', e);
-            }
+            } catch (e) { console.error('Ideas error:', e); }
         }
 
-        // ============================================
-        // Search
-        // ============================================
-        function debounceSearch() {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(doSearch, 400);
-        }
+        function debounceSearch() { clearTimeout(searchTimeout); searchTimeout = setTimeout(doSearch, 400); }
 
         async function doSearch() {
             const q = document.getElementById('searchInput').value.trim();
-            if (q.length < 2) {
-                document.getElementById('search-panel').style.display = 'none';
-                return;
-            }
-
+            if (q.length < 2) { document.getElementById('search-panel').style.display = 'none'; return; }
             try {
                 const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
                 const data = await res.json();
                 const panel = document.getElementById('search-panel');
                 const list = document.getElementById('search-results');
-
                 panel.style.display = 'block';
-
                 if (data.ok && data.results.length > 0) {
                     list.innerHTML = data.results.map(idea => `
                         <div class="idea-detail-card">
@@ -284,21 +242,13 @@
                         </div>
                     `).join('');
                 } else {
-                    list.innerHTML = '<div class="empty-state"><p>Sonuç bulunamadı</p></div>';
+                    list.innerHTML = `<div class="empty-state"><p>${t('noResults')}</p></div>`;
                 }
-            } catch (e) {
-                console.error('Arama hatası:', e);
-            }
+            } catch (e) { console.error('Search error:', e); }
         }
 
-        function closeSearch() {
-            document.getElementById('search-panel').style.display = 'none';
-            document.getElementById('searchInput').value = '';
-        }
+        function closeSearch() { document.getElementById('search-panel').style.display = 'none'; document.getElementById('searchInput').value = ''; }
 
-        // ============================================
-        // Initialize
-        // ============================================
         loadStats();
         loadSessions();
     </script>

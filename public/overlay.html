@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title>Fikir Overlay</title>
+    <title>Idea Overlay</title>
     <link rel="stylesheet" href="css/overlay.css">
 </head>
 
@@ -15,6 +15,7 @@
     <div id="postit-board"></div>
 
     <script src="/socket.io/socket.io.js"></script>
+    <script src="js/i18n.js"></script>
     <script>
         const socket = io();
         const notificationArea = document.getElementById('notification-area');
@@ -44,8 +45,8 @@
 
         function statusBadgeHTML(status) {
             switch (status) {
-                case 'in_progress': return '<div class="postit-status in-progress">🔨 Yapılıyor</div>';
-                case 'completed': return '<div class="postit-status completed">✅ Tamamlandı</div>';
+                case 'in_progress': return `<div class="postit-status in-progress">${t('inProgress')}</div>`;
+                case 'completed': return `<div class="postit-status completed">${t('completed')}</div>`;
                 default: return '';
             }
         }
@@ -58,12 +59,12 @@
             notif.innerHTML = `
                 <div class="notif-header">
                     <span class="notif-icon">💡</span>
-                    <span class="notif-label">Yeni Fikir!</span>
+                    <span class="notif-label">${t('newIdea')}</span>
                     <span class="notif-platform">${platformIcon(idea.platform)}</span>
                 </div>
                 <div class="notif-author">@${idea.author}</div>
                 <div class="notif-text">${idea.text}</div>
-                <div class="notif-waiting">Yanıt bekleniyor...</div>
+                <div class="notif-waiting">${t('waitingResponse')}</div>
             `;
             notificationArea.appendChild(notif);
             requestAnimationFrame(() => {

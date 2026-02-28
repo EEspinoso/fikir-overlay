@@ -1,21 +1,24 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <title>Fikir Kontrol Paneli v2</title>
+    <title>Idea Control Panel</title>
     <link rel="stylesheet" href="css/panel.css">
+    <link rel="stylesheet" href="css/lang.css">
+    <span data-i18n-title="panelTitle" style="display:none"></span>
 </head>
 
 <body>
     <div class="container">
         <header>
-            <h1>💡 Fikir Kontrol Paneli</h1>
+            <h1 data-i18n="panelTitle">💡 Idea Control Panel</h1>
             <div class="header-right">
-                <a href="/dashboard.html" class="btn btn-dashboard">📊 Dashboard</a>
+                <div id="lang-container"></div>
+                <a href="/dashboard.html" class="btn btn-dashboard" data-i18n="dashboard">📊 Dashboard</a>
                 <div class="status" id="status">
                     <span class="status-dot offline"></span>
-                    <span id="status-text">Bağlı değil</span>
+                    <span id="status-text" data-i18n="notConnected">Not connected</span>
                 </div>
             </div>
         </header>
@@ -31,12 +34,13 @@
             <!-- YouTube -->
             <div class="tab-content active" id="tab-youtube">
                 <div class="connect-form">
-                    <input type="text" id="youtubeInput" placeholder="YouTube Live ID veya Channel ID">
-                    <button onclick="connectYouTube()" class="btn btn-connect">Bağlan</button>
+                    <input type="text" id="youtubeInput" data-i18n="ytPlaceholder">
+                    <button onclick="connectYouTube()" class="btn btn-connect" data-i18n="connect">Connect</button>
                 </div>
-                <p class="help-text">Live ID: YouTube yayın URL'sindeki ?v= sonrası kod</p>
+                <p class="help-text" data-i18n="ytHelp">Live ID: the code after ?v= in the YouTube stream URL</p>
                 <div id="yt-history-section" style="margin-top: 10px; display: none;">
-                    <p class="help-text" style="margin-bottom: 6px;">Son bağlantılar:</p>
+                    <p class="help-text" style="margin-bottom: 6px;" data-i18n="recentConnections">Recent connections:
+                    </p>
                     <div id="yt-history-list" style="display: flex; flex-wrap: wrap; gap: 6px;"></div>
                 </div>
             </div>
@@ -44,52 +48,59 @@
             <!-- Twitch -->
             <div class="tab-content" id="tab-twitch">
                 <div class="connect-form">
-                    <input type="text" id="twitchInput" placeholder="Twitch kanal adı (örn: xQc)">
-                    <button onclick="connectTwitch()" class="btn btn-connect btn-twitch">Bağlan</button>
+                    <input type="text" id="twitchInput" data-i18n="twitchPlaceholder">
+                    <button onclick="connectTwitch()" class="btn btn-connect btn-twitch"
+                        data-i18n="connect">Connect</button>
                 </div>
-                <p class="help-text">Kanal adını yazmanız yeterli, # işareti gerekmez</p>
+                <p class="help-text" data-i18n="twitchHelp">Just type the channel name, no # needed</p>
             </div>
 
             <!-- Kick -->
             <div class="tab-content" id="tab-kick">
                 <div class="connect-form">
-                    <input type="text" id="kickInput" placeholder="Kick kanal slug (örn: xqc)">
-                    <button onclick="connectKick()" class="btn btn-connect btn-kick">Bağlan</button>
+                    <input type="text" id="kickInput" data-i18n="kickPlaceholder">
+                    <button onclick="connectKick()" class="btn btn-connect btn-kick"
+                        data-i18n="connect">Connect</button>
                 </div>
-                <p class="help-text">kick.com/kanal-adi URL'sindeki kanal adını yazın</p>
+                <p class="help-text" data-i18n="kickHelp">Type the channel name from kick.com/channel-name</p>
             </div>
         </section>
 
         <!-- Test Section -->
         <section class="test-section">
-            <h2>Test Modu</h2>
+            <h2 data-i18n="testMode">Test Mode</h2>
             <div class="test-form">
-                <input type="text" id="testAuthor" placeholder="Kullanıcı adı" value="TestKullanıcı">
-                <input type="text" id="testIdea" placeholder="Fikir yaz...">
-                <button onclick="sendTestIdea()" class="btn btn-test">Test Fikir Gönder</button>
+                <input type="text" id="testAuthor" data-i18n="testUser" value="TestUser">
+                <input type="text" id="testIdea" data-i18n="testPlaceholder">
+                <button onclick="sendTestIdea()" class="btn btn-test" data-i18n="testSend">Send Test Idea</button>
             </div>
         </section>
 
         <!-- Pending Ideas -->
         <section class="ideas-section">
-            <h2>Bekleyen Fikirler <span class="count" id="pending-count">0</span></h2>
+            <h2><span data-i18n="pendingIdeas">Pending Ideas</span> <span class="count" id="pending-count">0</span></h2>
             <div id="pending-ideas" class="ideas-list"></div>
-            <p class="empty-text" id="no-pending">Henüz fikir yok — izleyiciler /fikir, /idea, /idée, /идея vb. yazınca
-                burada görünecek (30+ dil)</p>
+            <p class="empty-text" id="no-pending" data-i18n="noIdeas">No ideas yet — viewers type /idea, /fikir, /idée
+                etc. to submit (30+ languages)</p>
         </section>
 
         <!-- Accepted Ideas -->
         <section class="ideas-section accepted-section">
-            <h2>✅ Kabul Edilen Fikirler <span class="count accepted-count" id="accepted-count">0</span></h2>
+            <h2><span data-i18n="acceptedIdeas">✅ Accepted Ideas</span> <span class="count accepted-count"
+                    id="accepted-count">0</span></h2>
             <div id="accepted-ideas" class="ideas-list"></div>
         </section>
 
         <footer>
-            <p>⌨️ Kısayollar: <kbd>Enter</kbd> Kabul · <kbd>Backspace</kbd> Red · <kbd>↑↓</kbd> Seçim</p>
+            <p><span data-i18n="shortcuts">⌨️ Shortcuts:</span> <kbd>Enter</kbd> <span
+                    data-i18n="shortcutAccept">Accept</span> · <kbd>Backspace</kbd> <span
+                    data-i18n="shortcutReject">Reject</span> · <kbd>↑↓</kbd> <span
+                    data-i18n="shortcutNav">Navigate</span></p>
         </footer>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
+    <script src="js/i18n.js"></script>
     <script>
         const socket = io();
         let pendingIdeas = [];
@@ -103,6 +114,24 @@
         const statusDot = document.querySelector('.status-dot');
         const statusText = document.getElementById('status-text');
 
+        // Init language
+        createLangSelector('lang-container');
+        applyTranslations();
+
+        // Re-render on language change
+        function onLanguageChange() {
+            applyTranslations();
+            renderPending();
+            // Re-render accepted cards
+            const cards = acceptedContainer.querySelectorAll('.idea-card');
+            cards.forEach(card => {
+                const ipBtn = card.querySelector('.btn-in-progress');
+                const compBtn = card.querySelector('.btn-completed');
+                if (ipBtn) ipBtn.textContent = t('inProgress');
+                if (compBtn) compBtn.textContent = t('completed');
+            });
+        }
+
         // ============================================
         // Platform Tabs
         // ============================================
@@ -113,9 +142,6 @@
             document.getElementById(`tab-${platform}`).classList.add('active');
         }
 
-        // ============================================
-        // Platform Icons
-        // ============================================
         function platformIcon(platform) {
             switch (platform) {
                 case 'youtube': return '🟥';
@@ -128,8 +154,8 @@
 
         function statusBadge(status) {
             switch (status) {
-                case 'in_progress': return '<span class="status-badge in-progress">🔨 Yapılıyor</span>';
-                case 'completed': return '<span class="status-badge completed">✅ Tamamlandı</span>';
+                case 'in_progress': return `<span class="status-badge in-progress">${t('inProgress')}</span>`;
+                case 'completed': return `<span class="status-badge completed">${t('completed')}</span>`;
                 default: return '';
             }
         }
@@ -137,20 +163,14 @@
         // ============================================
         // Connection History
         // ============================================
-        function loadHistory() {
-            try {
-                return JSON.parse(localStorage.getItem('fikir-history') || '[]');
-            } catch { return []; }
-        }
-
+        function loadHistory() { try { return JSON.parse(localStorage.getItem('fikir-history') || '[]'); } catch { return []; } }
         function saveToHistory(id, label) {
             const history = loadHistory();
             const filtered = history.filter(h => h.id !== id);
-            filtered.unshift({ id, label: label || id, date: new Date().toLocaleDateString('tr-TR') });
+            filtered.unshift({ id, label: label || id, date: new Date().toLocaleDateString() });
             localStorage.setItem('fikir-history', JSON.stringify(filtered.slice(0, 10)));
             renderHistory();
         }
-
         function renderHistory() {
             const history = loadHistory();
             const section = document.getElementById('yt-history-section');
@@ -161,16 +181,11 @@
                 `<button class="btn btn-history" onclick="quickConnect('${h.id}')" title="${h.date}">${h.label}</button>`
             ).join('');
         }
-
-        function quickConnect(id) {
-            document.getElementById('youtubeInput').value = id;
-            connectYouTube();
-        }
-
+        function quickConnect(id) { document.getElementById('youtubeInput').value = id; connectYouTube(); }
         renderHistory();
 
         // ============================================
-        // Connection Functions
+        // Connections
         // ============================================
         function extractVideoId(input) {
             let match = input.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
@@ -189,52 +204,29 @@
             const videoId = extractVideoId(input);
             if (videoId) {
                 saveToHistory(videoId, videoId);
-                fetch('/api/connect', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ liveId: videoId })
-                });
+                fetch('/api/connect', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ liveId: videoId }) });
             } else {
                 saveToHistory(input, input);
-                fetch('/api/connect', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ channelId: input })
-                });
+                fetch('/api/connect', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ channelId: input }) });
             }
         }
 
         function connectTwitch() {
             const channel = document.getElementById('twitchInput').value.trim();
             if (!channel) return;
-            fetch('/api/connect-twitch', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ channel })
-            });
+            fetch('/api/connect-twitch', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ channel }) });
         }
 
         function connectKick() {
             const channel = document.getElementById('kickInput').value.trim();
             if (!channel) return;
-            fetch('/api/connect-kick', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ channel })
-            });
+            fetch('/api/connect-kick', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ channel }) });
         }
 
-        // ============================================
-        // Test Ideas
-        // ============================================
         function sendTestIdea() {
-            const author = document.getElementById('testAuthor').value || 'TestKullanıcı';
-            const text = document.getElementById('testIdea').value || 'Bu bir test fikridir!';
-            fetch('/api/test-idea', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ author, text })
-            });
+            const author = document.getElementById('testAuthor').value || 'TestUser';
+            const text = document.getElementById('testIdea').value || 'This is a test idea!';
+            fetch('/api/test-idea', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ author, text }) });
             document.getElementById('testIdea').value = '';
             document.getElementById('testIdea').focus();
         }
@@ -254,14 +246,13 @@
                     </div>
                     <div class="idea-text">${idea.text}</div>
                     <div class="idea-actions">
-                        <button onclick="acceptIdea(${idea.id})" class="btn btn-accept">✅ Kabul</button>
-                        <button onclick="rejectIdea(${idea.id})" class="btn btn-reject">❌ Red</button>
+                        <button onclick="acceptIdea(${idea.id})" class="btn btn-accept">${t('accept')}</button>
+                        <button onclick="rejectIdea(${idea.id})" class="btn btn-reject">${t('reject')}</button>
                     </div>
                 `;
                 card.onclick = () => { selectedIndex = idx; renderPending(); };
                 pendingContainer.appendChild(card);
             });
-
             pendingCount.textContent = pendingIdeas.length;
             noPending.style.display = pendingIdeas.length ? 'none' : 'block';
         }
@@ -276,59 +267,29 @@
                     <span class="idea-time">${idea.time}</span>
                 </div>
                 <div class="idea-text">${idea.text}</div>
-                <div class="idea-status-row" id="status-row-${idea.id}">
-                    ${statusBadge(idea.status)}
-                </div>
+                <div class="idea-status-row" id="status-row-${idea.id}">${statusBadge(idea.status)}</div>
                 <div class="idea-actions status-actions">
-                    <button onclick="changeStatus(${idea.id}, 'in_progress')" class="btn btn-in-progress"
-                        ${idea.status === 'in_progress' ? 'disabled' : ''}>🔨 Yapılıyor</button>
-                    <button onclick="changeStatus(${idea.id}, 'completed')" class="btn btn-completed"
-                        ${idea.status === 'completed' ? 'disabled' : ''}>✅ Tamamlandı</button>
+                    <button onclick="changeStatus(${idea.id}, 'in_progress')" class="btn btn-in-progress" ${idea.status === 'in_progress' ? 'disabled' : ''}>${t('inProgress')}</button>
+                    <button onclick="changeStatus(${idea.id}, 'completed')" class="btn btn-completed" ${idea.status === 'completed' ? 'disabled' : ''}>${t('completed')}</button>
                 </div>
             `;
             acceptedContainer.prepend(card);
             acceptedCount.textContent = acceptedContainer.children.length;
         }
 
-        function acceptIdea(id) {
-            fetch(`/api/accept/${id}`, { method: 'POST' });
-        }
-
-        function rejectIdea(id) {
-            fetch(`/api/reject/${id}`, { method: 'POST' });
-        }
-
+        function acceptIdea(id) { fetch(`/api/accept/${id}`, { method: 'POST' }); }
+        function rejectIdea(id) { fetch(`/api/reject/${id}`, { method: 'POST' }); }
         function changeStatus(id, status) {
-            fetch(`/api/idea/${id}/status`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ status })
-            });
+            fetch(`/api/idea/${id}/status`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status }) });
         }
 
-        // ============================================
-        // Keyboard Shortcuts
-        // ============================================
+        // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
-            if (e.target.tagName === 'INPUT') {
-                if (e.key === 'Enter' && e.target.id === 'testIdea') {
-                    sendTestIdea();
-                }
-                return;
-            }
-
-            if (e.key === 'Enter' && pendingIdeas.length > 0) {
-                acceptIdea(pendingIdeas[selectedIndex]?.id);
-            } else if (e.key === 'Backspace' && pendingIdeas.length > 0) {
-                e.preventDefault();
-                rejectIdea(pendingIdeas[selectedIndex]?.id);
-            } else if (e.key === 'ArrowUp') {
-                selectedIndex = Math.max(0, selectedIndex - 1);
-                renderPending();
-            } else if (e.key === 'ArrowDown') {
-                selectedIndex = Math.min(pendingIdeas.length - 1, selectedIndex + 1);
-                renderPending();
-            }
+            if (e.target.tagName === 'INPUT') { if (e.key === 'Enter' && e.target.id === 'testIdea') sendTestIdea(); return; }
+            if (e.key === 'Enter' && pendingIdeas.length > 0) acceptIdea(pendingIdeas[selectedIndex]?.id);
+            else if (e.key === 'Backspace' && pendingIdeas.length > 0) { e.preventDefault(); rejectIdea(pendingIdeas[selectedIndex]?.id); }
+            else if (e.key === 'ArrowUp') { selectedIndex = Math.max(0, selectedIndex - 1); renderPending(); }
+            else if (e.key === 'ArrowDown') { selectedIndex = Math.min(pendingIdeas.length - 1, selectedIndex + 1); renderPending(); }
         });
 
         // ============================================
@@ -337,40 +298,19 @@
         socket.on('status', (data) => {
             if (data.connected) {
                 statusDot.className = 'status-dot online';
-                const pIcon = platformIcon(data.platform);
-                const label = data.liveId || data.channel || '';
-                statusText.textContent = `${pIcon} ${data.platform} bağlı (${label})`;
+                statusText.textContent = `${platformIcon(data.platform)} ${data.platform} ${t('connected')} (${data.liveId || data.channel || ''})`;
             } else {
                 statusDot.className = 'status-dot offline';
-                statusText.textContent = data.error || 'Bağlı değil';
+                statusText.textContent = data.error || t('notConnected');
             }
         });
 
-        socket.on('new-idea', (idea) => {
-            pendingIdeas.push(idea);
-            renderPending();
-            try { new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1sb2B0eYmRk5GKgHhxcXV9hoyRkpCLhH56eX2ChoqNjo2Kg4B+fX+ChouNjo6Mh4N/').play(); } catch (e) { }
-        });
-
-        socket.on('idea-accepted', (idea) => {
-            pendingIdeas = pendingIdeas.filter(i => i.id !== idea.id);
-            selectedIndex = Math.min(selectedIndex, Math.max(0, pendingIdeas.length - 1));
-            renderPending();
-            addAcceptedCard(idea);
-        });
-
-        socket.on('idea-rejected', (idea) => {
-            pendingIdeas = pendingIdeas.filter(i => i.id !== idea.id);
-            selectedIndex = Math.min(selectedIndex, Math.max(0, pendingIdeas.length - 1));
-            renderPending();
-        });
-
+        socket.on('new-idea', (idea) => { pendingIdeas.push(idea); renderPending(); try { new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1sb2B0eYmRk5GKgHhxcXV9hoyRkpCLhH56eX2ChoqNjo2Kg4B+fX+ChouNjo6Mh4N/').play(); } catch (e) { } });
+        socket.on('idea-accepted', (idea) => { pendingIdeas = pendingIdeas.filter(i => i.id !== idea.id); selectedIndex = Math.min(selectedIndex, Math.max(0, pendingIdeas.length - 1)); renderPending(); addAcceptedCard(idea); });
+        socket.on('idea-rejected', (idea) => { pendingIdeas = pendingIdeas.filter(i => i.id !== idea.id); selectedIndex = Math.min(selectedIndex, Math.max(0, pendingIdeas.length - 1)); renderPending(); });
         socket.on('idea-status-changed', (data) => {
             const statusRow = document.getElementById(`status-row-${data.id}`);
-            if (statusRow) {
-                statusRow.innerHTML = statusBadge(data.status);
-            }
-            // Update buttons
+            if (statusRow) statusRow.innerHTML = statusBadge(data.status);
             const card = document.getElementById(`accepted-${data.id}`);
             if (card) {
                 const ipBtn = card.querySelector('.btn-in-progress');
@@ -379,14 +319,7 @@
                 if (compBtn) compBtn.disabled = data.status === 'completed';
             }
         });
-
-        socket.on('sync', (data) => {
-            pendingIdeas = data.pending;
-            renderPending();
-            data.accepted.forEach(idea => {
-                addAcceptedCard(idea);
-            });
-        });
+        socket.on('sync', (data) => { pendingIdeas = data.pending; renderPending(); data.accepted.forEach(idea => addAcceptedCard(idea)); });
     </script>
 </body>
 
