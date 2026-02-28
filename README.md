@@ -11,6 +11,8 @@
 
 Viewers submit ideas in chat → you manage them from a control panel → accepted ideas appear as post-it notes on your OBS overlay.
 
+[Preview](#-preview) · [Features](#-features) · [Quick Start](#-quick-start) · [OBS Setup](#️-obs-setup) · [Languages](#️-language-support) · [Shortcuts](#️-keyboard-shortcuts) · [Structure](#-structure) · [License](#-license)
+
 </div>
 
 ---
